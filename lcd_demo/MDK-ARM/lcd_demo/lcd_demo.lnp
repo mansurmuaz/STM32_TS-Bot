@@ -1,0 +1,25 @@
+--cpu Cortex-M3
+"lcd_demo\startup_stm32f107xc.o"
+"lcd_demo\main.o"
+"lcd_demo\stm32f1xx_it.o"
+"lcd_demo\stm32f1xx_hal_msp.o"
+"lcd_demo\stm32f1xx_hal_gpio_ex.o"
+"lcd_demo\stm32f1xx_hal_tim.o"
+"lcd_demo\stm32f1xx_hal_tim_ex.o"
+"lcd_demo\stm32f1xx_hal.o"
+"lcd_demo\stm32f1xx_hal_rcc.o"
+"lcd_demo\stm32f1xx_hal_rcc_ex.o"
+"lcd_demo\stm32f1xx_hal_gpio.o"
+"lcd_demo\stm32f1xx_hal_dma.o"
+"lcd_demo\stm32f1xx_hal_cortex.o"
+"lcd_demo\stm32f1xx_hal_pwr.o"
+"lcd_demo\stm32f1xx_hal_flash.o"
+"lcd_demo\stm32f1xx_hal_flash_ex.o"
+"lcd_demo\system_stm32f1xx.o"
+"lcd_demo\ili9341_gfx.o"
+"lcd_demo\ili9341_stm32_driver.o"
+"lcd_demo\ili9341_touchscreen.o"
+--library_type=microlib --strict --scatter "lcd_demo\lcd_demo.sct"
+--summary_stderr --info summarysizes --map --load_addr_map_info --xref --callgraph --symbols
+--info sizes --info totals --info unused --info veneers
+--list "lcd_demo.map" -o lcd_demo\lcd_demo.axf
