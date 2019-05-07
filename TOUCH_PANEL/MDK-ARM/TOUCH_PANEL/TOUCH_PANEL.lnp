@@ -1,0 +1,25 @@
+--cpu Cortex-M3
+"touch_panel\startup_stm32f107xc.o"
+"touch_panel\main.o"
+"touch_panel\stm32f1xx_it.o"
+"touch_panel\stm32f1xx_hal_msp.o"
+"touch_panel\stm32f1xx_hal_gpio_ex.o"
+"touch_panel\stm32f1xx_hal_adc.o"
+"touch_panel\stm32f1xx_hal_adc_ex.o"
+"touch_panel\stm32f1xx_hal_tim.o"
+"touch_panel\stm32f1xx_hal_tim_ex.o"
+"touch_panel\stm32f1xx_hal.o"
+"touch_panel\stm32f1xx_hal_rcc.o"
+"touch_panel\stm32f1xx_hal_rcc_ex.o"
+"touch_panel\stm32f1xx_hal_gpio.o"
+"touch_panel\stm32f1xx_hal_dma.o"
+"touch_panel\stm32f1xx_hal_cortex.o"
+"touch_panel\stm32f1xx_hal_pwr.o"
+"touch_panel\stm32f1xx_hal_flash.o"
+"touch_panel\stm32f1xx_hal_flash_ex.o"
+"touch_panel\system_stm32f1xx.o"
+"touch_panel\touch.o"
+--library_type=microlib --strict --scatter "TOUCH_PANEL\TOUCH_PANEL.sct"
+--summary_stderr --info summarysizes --map --load_addr_map_info --xref --callgraph --symbols
+--info sizes --info totals --info unused --info veneers
+--list "TOUCH_PANEL.map" -o TOUCH_PANEL\TOUCH_PANEL.axf
