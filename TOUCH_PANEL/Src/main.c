@@ -72,9 +72,12 @@ void EASYMX_BOARD_TOUCH_CmpltCallback(uint32_t x, uint32_t y){
 	} else {
 		coor_x = 0;
 		coor_y = 0;
+		
+		HAL_GPIO_WritePin(GPIOD, GPIO_PIN_8, GPIO_PIN_RESET);
+		HAL_GPIO_WritePin(GPIOD, GPIO_PIN_9, GPIO_PIN_RESET);
+		HAL_GPIO_WritePin(GPIOD, GPIO_PIN_10, GPIO_PIN_RESET);
+		HAL_GPIO_WritePin(GPIOD, GPIO_PIN_11, GPIO_PIN_RESET);
 	}
-	//You can put your code here or override it in the main file.
-	__NOP();
 }
 /* USER CODE END 0 */
 
@@ -85,26 +88,6 @@ void EASYMX_BOARD_TOUCH_CmpltCallback(uint32_t x, uint32_t y){
 int main(void)
 {
   /* USER CODE BEGIN 1 */
-
-	if ( coor_x >= 1400 && coor_x <= 2400) {
-		
-		if (coor_y >= 300 && coor_y <= 1350 ) {
-			// GO BACK
-			
-		} else if ( coor_y >= 2800  ) {
-			// GO FORWARD
-			
-		}
-	} else 	if ( coor_y >= 1450 && coor_y <= 2700) {
-		
-		if (coor_x >= 300 && coor_x <= 1300 ) {
-			// TURN LEFT
-			
-		} else if ( coor_x >= 2500  ) {
-			// TURN RIGHT
-			
-		}
-	} 
 
   /* USER CODE END 1 */
 
@@ -137,18 +120,44 @@ int main(void)
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
-  while (1){
+	while (1){
   
 		
 		
+		if ( coor_x >= 1400 && coor_x <= 2400) {
 		
+			if (coor_y >= 300 && coor_y <= 1350 ) {
+				// GO BACK
+				HAL_GPIO_WritePin(GPIOD, GPIO_PIN_8, GPIO_PIN_SET);
+				HAL_GPIO_WritePin(GPIOD, GPIO_PIN_9, GPIO_PIN_RESET);
+				HAL_GPIO_WritePin(GPIOD, GPIO_PIN_10, GPIO_PIN_SET);
+				HAL_GPIO_WritePin(GPIOD, GPIO_PIN_11, GPIO_PIN_RESET);
+			} else if ( coor_y >= 2800  ) {
+				// GO FORWARD
+				HAL_GPIO_WritePin(GPIOD, GPIO_PIN_8, GPIO_PIN_RESET);
+				HAL_GPIO_WritePin(GPIOD, GPIO_PIN_9, GPIO_PIN_SET);
+				HAL_GPIO_WritePin(GPIOD, GPIO_PIN_10, GPIO_PIN_RESET);
+				HAL_GPIO_WritePin(GPIOD, GPIO_PIN_11, GPIO_PIN_SET);		
+			}
+		}
+	
+		if ( coor_y >= 1450 && coor_y <= 2700) {
 		
-		
-		
-		
-		
-		
-		
+			if (coor_x >= 300 && coor_x <= 1300 ) {
+				// TURN LEFT
+				HAL_GPIO_WritePin(GPIOD, GPIO_PIN_8, GPIO_PIN_RESET);
+				HAL_GPIO_WritePin(GPIOD, GPIO_PIN_9, GPIO_PIN_SET);
+				HAL_GPIO_WritePin(GPIOD, GPIO_PIN_10, GPIO_PIN_SET);
+				HAL_GPIO_WritePin(GPIOD, GPIO_PIN_11, GPIO_PIN_RESET);			
+			} else if ( coor_x >= 2500  ) {
+				// TURN RIGHT
+				HAL_GPIO_WritePin(GPIOD, GPIO_PIN_8, GPIO_PIN_SET);
+				HAL_GPIO_WritePin(GPIOD, GPIO_PIN_9, GPIO_PIN_RESET);
+				HAL_GPIO_WritePin(GPIOD, GPIO_PIN_10, GPIO_PIN_RESET);
+				HAL_GPIO_WritePin(GPIOD, GPIO_PIN_11, GPIO_PIN_SET);			
+			}
+		}
+		HAL_Delay(10);
 		
     /* USER CODE END WHILE */
 
@@ -348,10 +357,21 @@ static void MX_GPIO_Init(void)
   /* GPIO Ports Clock Enable */
   __HAL_RCC_GPIOC_CLK_ENABLE();
   __HAL_RCC_GPIOB_CLK_ENABLE();
+  __HAL_RCC_GPIOD_CLK_ENABLE();
   __HAL_RCC_GPIOA_CLK_ENABLE();
 
   /*Configure GPIO pin Output Level */
+  HAL_GPIO_WritePin(GPIOD, GPIO_PIN_8|GPIO_PIN_9|GPIO_PIN_10|GPIO_PIN_11, GPIO_PIN_RESET);
+
+  /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(GPIOB, DRIVE_A_Pin|DRIVE_B_Pin, GPIO_PIN_RESET);
+
+  /*Configure GPIO pins : PD8 PD9 PD10 PD11 */
+  GPIO_InitStruct.Pin = GPIO_PIN_8|GPIO_PIN_9|GPIO_PIN_10|GPIO_PIN_11;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  HAL_GPIO_Init(GPIOD, &GPIO_InitStruct);
 
   /*Configure GPIO pins : DRIVE_A_Pin DRIVE_B_Pin */
   GPIO_InitStruct.Pin = DRIVE_A_Pin|DRIVE_B_Pin;
