@@ -33,6 +33,8 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
+uint32_t coor_x = 0;
+uint32_t coor_y = 0;
 
 /* USER CODE END PD */
 
@@ -63,7 +65,17 @@ static void MX_TIM6_Init(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-
+void EASYMX_BOARD_TOUCH_CmpltCallback(uint32_t x, uint32_t y){
+	if (x >= 50 && y >= 50 ) {
+		coor_x = x;
+		coor_y = y;
+	} else {
+		coor_x = 0;
+		coor_y = 0;
+	}
+	//You can put your code here or override it in the main file.
+	__NOP();
+}
 /* USER CODE END 0 */
 
 /**
@@ -73,6 +85,26 @@ static void MX_TIM6_Init(void);
 int main(void)
 {
   /* USER CODE BEGIN 1 */
+
+	if ( coor_x >= 1400 && coor_x <= 2400) {
+		
+		if (coor_y >= 300 && coor_y <= 1350 ) {
+			// GO BACK
+			
+		} else if ( coor_y >= 2800  ) {
+			// GO FORWARD
+			
+		}
+	} else 	if ( coor_y >= 1450 && coor_y <= 2700) {
+		
+		if (coor_x >= 300 && coor_x <= 1300 ) {
+			// TURN LEFT
+			
+		} else if ( coor_x >= 2500  ) {
+			// TURN RIGHT
+			
+		}
+	} 
 
   /* USER CODE END 1 */
 
@@ -105,8 +137,18 @@ int main(void)
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
-  while (1)
-  {
+  while (1){
+  
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
 		
     /* USER CODE END WHILE */
 

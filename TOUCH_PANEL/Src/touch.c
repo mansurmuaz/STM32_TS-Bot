@@ -22,10 +22,8 @@ uint32_t x_raw = 0;
 uint32_t y_raw = 0;
 StageType stage;
 
-void EASYMX_BOARD_TOUCH_CmpltCallback(uint32_t x, uint32_t y){
+__weak void EASYMX_BOARD_TOUCH_CmpltCallback(uint32_t x, uint32_t y){
 	
-	uint32_t xssa = x;
-	uint32_t yssa = y;
 	//You can put your code here or override it in the main file.
 	__NOP();
 }
