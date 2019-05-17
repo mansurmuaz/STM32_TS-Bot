@@ -28,3 +28,4 @@ touch_panel\main.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_pwr.h
 touch_panel\main.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_tim.h
 touch_panel\main.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_tim_ex.h
 touch_panel\main.o: ../Inc/touch.h
+touch_panel\main.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\math.h
