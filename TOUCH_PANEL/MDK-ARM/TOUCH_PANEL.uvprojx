@@ -505,6 +505,21 @@
           </Files>
         </Group>
         <Group>
+          <GroupName>Drivers/ILI9341</GroupName>
+          <Files>
+            <File>
+              <FileName>ILI9341_GFX.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Drivers\ILI9341\ILI9341_GFX.c</FilePath>
+            </File>
+            <File>
+              <FileName>ILI9341_STM32_Driver.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Drivers\ILI9341\ILI9341_STM32_Driver.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
           <GroupName>::CMSIS</GroupName>
         </Group>
       </Groups>

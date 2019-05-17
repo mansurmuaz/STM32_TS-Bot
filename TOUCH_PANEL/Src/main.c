@@ -25,6 +25,8 @@
 /* USER CODE BEGIN Includes */
 #include "touch.h"
 #include <math.h>
+#include "ILI9341_STM32_Driver.h"
+#include "ILI9341_GFX.h"
 
 /* USER CODE END Includes */
 
@@ -121,26 +123,26 @@ int main(void)
 	EASYMX_BOARD_TOUCH_Init(&hadc1, &hadc2, &htim6);
 	EASYMX_BOARD_TOUCH_Start();
 	HAL_TIM_PWM_Start(&htim1,TIM_CHANNEL_4);
+	ILI9341_Init();
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
+	ILI9341_Set_Rotation(SCREEN_HORIZONTAL_1);
+	ILI9341_Fill_Screen(BLUE);
 	int8_t n = 0;
 	double_t noteFreq = 440;
 	uint16_t arr = 1000;
-	while (1){
-  
-		
+	while (1){		
 		
 		if ( coor_x >= 1400 && coor_x <= 2400) {
 		
 			if (coor_y >= 300 && coor_y <= 1350 ) {
 				// GO BACK
-				HAL_GPIO_WritePin(GPIOD, GPIO_PIN_8, GPIO_PIN_SET);
-				HAL_GPIO_WritePin(GPIOD, GPIO_PIN_9, GPIO_PIN_RESET);
-				HAL_GPIO_WritePin(GPIOD, GPIO_PIN_10, GPIO_PIN_SET);
-				HAL_GPIO_WritePin(GPIOD, GPIO_PIN_11, GPIO_PIN_RESET);
-				
+				HAL_GPIO_WritePin(GPIOD, GPIO_PIN_8, GPIO_PIN_RESET);
+				HAL_GPIO_WritePin(GPIOD, GPIO_PIN_9, GPIO_PIN_SET);
+				HAL_GPIO_WritePin(GPIOD, GPIO_PIN_10, GPIO_PIN_RESET);
+				HAL_GPIO_WritePin(GPIOD, GPIO_PIN_11, GPIO_PIN_SET);	
 				
 				n = floor(2000 / 42.217) - 36;
 				noteFreq = 440*pow(1.059463094359, n);
@@ -150,10 +152,11 @@ int main(void)
 				
 			} else if ( coor_y >= 2800  ) {
 				// GO FORWARD
-				HAL_GPIO_WritePin(GPIOD, GPIO_PIN_8, GPIO_PIN_RESET);
-				HAL_GPIO_WritePin(GPIOD, GPIO_PIN_9, GPIO_PIN_SET);
-				HAL_GPIO_WritePin(GPIOD, GPIO_PIN_10, GPIO_PIN_RESET);
-				HAL_GPIO_WritePin(GPIOD, GPIO_PIN_11, GPIO_PIN_SET);		
+				
+				HAL_GPIO_WritePin(GPIOD, GPIO_PIN_8, GPIO_PIN_SET);
+				HAL_GPIO_WritePin(GPIOD, GPIO_PIN_9, GPIO_PIN_RESET);
+				HAL_GPIO_WritePin(GPIOD, GPIO_PIN_10, GPIO_PIN_SET);
+				HAL_GPIO_WritePin(GPIOD, GPIO_PIN_11, GPIO_PIN_RESET);	
 			}
 		}
 	
@@ -161,16 +164,20 @@ int main(void)
 		
 			if (coor_x >= 300 && coor_x <= 1300 ) {
 				// TURN LEFT
-				HAL_GPIO_WritePin(GPIOD, GPIO_PIN_8, GPIO_PIN_RESET);
-				HAL_GPIO_WritePin(GPIOD, GPIO_PIN_9, GPIO_PIN_SET);
-				HAL_GPIO_WritePin(GPIOD, GPIO_PIN_10, GPIO_PIN_SET);
-				HAL_GPIO_WritePin(GPIOD, GPIO_PIN_11, GPIO_PIN_RESET);			
-			} else if ( coor_x >= 2500  ) {
-				// TURN RIGHT
+				
 				HAL_GPIO_WritePin(GPIOD, GPIO_PIN_8, GPIO_PIN_SET);
 				HAL_GPIO_WritePin(GPIOD, GPIO_PIN_9, GPIO_PIN_RESET);
 				HAL_GPIO_WritePin(GPIOD, GPIO_PIN_10, GPIO_PIN_RESET);
 				HAL_GPIO_WritePin(GPIOD, GPIO_PIN_11, GPIO_PIN_SET);			
+				
+			} else if ( coor_x >= 2500  ) {
+				// TURN RIGHT
+				
+				HAL_GPIO_WritePin(GPIOD, GPIO_PIN_8, GPIO_PIN_RESET);
+				HAL_GPIO_WritePin(GPIOD, GPIO_PIN_9, GPIO_PIN_SET);
+				HAL_GPIO_WritePin(GPIOD, GPIO_PIN_10, GPIO_PIN_SET);
+				HAL_GPIO_WritePin(GPIOD, GPIO_PIN_11, GPIO_PIN_RESET);			
+				
 			}
 		}
 		HAL_Delay(10);

@@ -1,5 +1,5 @@
-touch_panel\ili9341_stm32_driver.o: ..\Src\ILI9341_STM32_Driver.c
-touch_panel\ili9341_stm32_driver.o: ..\Src\ILI9341_STM32_Driver.h
+touch_panel\ili9341_stm32_driver.o: ..\Drivers\ILI9341\ILI9341_STM32_Driver.c
+touch_panel\ili9341_stm32_driver.o: ..\Drivers\ILI9341\ILI9341_STM32_Driver.h
 touch_panel\ili9341_stm32_driver.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal.h
 touch_panel\ili9341_stm32_driver.o: ../Inc/stm32f1xx_hal_conf.h
 touch_panel\ili9341_stm32_driver.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_rcc.h

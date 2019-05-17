@@ -19,6 +19,8 @@
 "touch_panel\stm32f1xx_hal_flash_ex.o"
 "touch_panel\system_stm32f1xx.o"
 "touch_panel\touch.o"
+"touch_panel\ili9341_gfx.o"
+"touch_panel\ili9341_stm32_driver.o"
 --library_type=microlib --strict --scatter "TOUCH_PANEL\TOUCH_PANEL.sct"
 --summary_stderr --info summarysizes --map --load_addr_map_info --xref --callgraph --symbols
 --info sizes --info totals --info unused --info veneers
