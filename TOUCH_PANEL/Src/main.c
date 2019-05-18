@@ -94,6 +94,9 @@ void goForward(void) {
 		HAL_GPIO_WritePin(GPIOD, GPIO_PIN_9, GPIO_PIN_RESET);
 		HAL_GPIO_WritePin(GPIOD, GPIO_PIN_10, GPIO_PIN_SET);
 		HAL_GPIO_WritePin(GPIOD, GPIO_PIN_11, GPIO_PIN_RESET);	
+	
+		HAL_Delay(40);
+
 }
 
 void goBackward(void) {
@@ -110,13 +113,18 @@ void goBackward(void) {
 
 		__HAL_TIM_SET_AUTORELOAD(&htim1, arr);//set the new period
 		__HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_4, (int)arr/2);//keep 50% duty cycle
+
+
+		HAL_Delay(40);
 }
 
 void goLeft(void) {
 		HAL_GPIO_WritePin(GPIOD, GPIO_PIN_8, GPIO_PIN_SET);
 		HAL_GPIO_WritePin(GPIOD, GPIO_PIN_9, GPIO_PIN_RESET);
 		HAL_GPIO_WritePin(GPIOD, GPIO_PIN_10, GPIO_PIN_RESET);
-		HAL_GPIO_WritePin(GPIOD, GPIO_PIN_11, GPIO_PIN_SET);		
+		HAL_GPIO_WritePin(GPIOD, GPIO_PIN_11, GPIO_PIN_SET);	
+
+		HAL_Delay(40);	
 }
 
 void goRight(void) {
@@ -125,6 +133,9 @@ void goRight(void) {
 		HAL_GPIO_WritePin(GPIOD, GPIO_PIN_9, GPIO_PIN_SET);
 		HAL_GPIO_WritePin(GPIOD, GPIO_PIN_10, GPIO_PIN_SET);
 		HAL_GPIO_WritePin(GPIOD, GPIO_PIN_11, GPIO_PIN_RESET);			
+	
+		HAL_Delay(40);
+
 }
 
 
@@ -182,11 +193,73 @@ int main(void)
 	double_t noteFreq = 440;
 	uint16_t arr = 1000;
 	
-	n = floor(2000 / 42.217) - 36;
-	noteFreq = 440*pow(1.059463094359, n);
-	arr = (double_t)72000000 / noteFreq / (htim1.Init.Prescaler+ 1) - 1;
+	int8_t mode = 0;
 	
+		int8_t path[100];
+//	0 -> none
+//	1 -> forward
+//	2 -> backward
+//	3 -> left
+//  4 -> right
+		int counter = 0;
+		
+		for( int i = 0; i < 100; i++ ){
+			path[i] = 0;
+		}
+		
 	while (1){		
+		
+		
+		if (HAL_GPIO_ReadPin(GPIOC, GPIO_PIN_0)) {
+			mode = !mode;
+			__HAL_TIM_SET_AUTORELOAD(&htim1, arr);//set the new period
+			__HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_4, (int)arr/2);//keep 50% duty cycle
+			HAL_Delay(300);
+			__HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_4, 0);
+			if (mode == 0){
+			
+				for( int i = 0; i < counter; i++ ){
+					int time = 0;
+					switch (path[i]) {
+						case 1:
+								while (time < 10 ) {
+									goForward();
+									time++;
+								}
+								HAL_Delay(500);
+								break;
+						case 2:
+								while (time < 10 ) {
+									goBackward();
+									time++;
+								}
+								HAL_Delay(500);
+								break;
+						case 3:
+								while (time < 5 ) {
+									goLeft();
+									time++;
+								}
+								HAL_Delay(500);
+								break;
+						case 4:
+								while (time < 5 ) {
+									goRight();
+									time++;
+								}
+								HAL_Delay(500);
+								break;
+					}
+					HAL_GPIO_WritePin(GPIOD, GPIO_PIN_8, GPIO_PIN_RESET);
+					HAL_GPIO_WritePin(GPIOD, GPIO_PIN_9, GPIO_PIN_RESET);
+					HAL_GPIO_WritePin(GPIOD, GPIO_PIN_10, GPIO_PIN_RESET);
+					HAL_GPIO_WritePin(GPIOD, GPIO_PIN_11, GPIO_PIN_RESET);
+					path[i] = 0;
+				}
+				counter = 0;				
+			}
+		}
+		
 		
 //		HAL_UART_Transmit_IT(&huart1, pDataTransmit, 9);
 		HAL_UART_Receive_IT(&huart1, pDataReceivedByte, 1);
@@ -194,10 +267,27 @@ int main(void)
 		if ( (coor_x >= 1400 && coor_x <= 2400) || pDataReceivedByte[0] == 'w' || pDataReceivedByte[0] == 's' ) {
 				
 				if ((coor_y >= 300 && coor_y <= 1350) || pDataReceivedByte[0] == 's' ) {
-						goBackward();
-				
+					if(!mode) {
+							goBackward();					
+						} else {
+							path[counter] = 2;
+							counter++;
+							__HAL_TIM_SET_AUTORELOAD(&htim1, arr);//set the new period
+							__HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_4, (int)arr/2);//keep 50% duty cycle
+							HAL_Delay(800);
+							__HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_4, 0);
+						}
 				} else if ( coor_y >= 2800  || pDataReceivedByte[0] == 'w' ) {
-						goForward();
+						if(!mode) {
+							goForward();			
+						} else {
+							path[counter] = 1;
+							counter++;
+							__HAL_TIM_SET_AUTORELOAD(&htim1, arr);//set the new period
+							__HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_4, (int)arr/2);//keep 50% duty cycle
+							HAL_Delay(800);
+							__HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_4, 0);
+						}
 				}
 		}
 	
@@ -205,9 +295,29 @@ int main(void)
 		
 				if ((coor_x >= 300 && coor_x <= 1300) || pDataReceivedByte[0] == 'a'  ) {				// TURN LEFT
 				
-					goRight();
+						
+						if(!mode) {
+							goLeft();
+						} else {
+							path[counter] = 3;
+							counter++;
+							__HAL_TIM_SET_AUTORELOAD(&htim1, arr);//set the new period
+							__HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_4, (int)arr/2);//keep 50% duty cycle
+							HAL_Delay(800);
+							__HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_4, 0);
+						}
+						
 				} else if ( coor_x >= 2500 || pDataReceivedByte[0] == 'd'  ) {
-					goLeft();
+						if(!mode) {
+							goRight();
+						} else {
+							path[counter] = 4;
+							counter++;
+							__HAL_TIM_SET_AUTORELOAD(&htim1, arr);//set the new period
+							__HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_4, (int)arr/2);//keep 50% duty cycle
+							HAL_Delay(800);
+							__HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_4, 0);
+						}
 				}
 		}
 		HAL_Delay(40);
@@ -518,6 +628,12 @@ static void MX_GPIO_Init(void)
 
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(GPIOB, DRIVE_A_Pin|DRIVE_B_Pin, GPIO_PIN_RESET);
+
+  /*Configure GPIO pin : PC0 */
+  GPIO_InitStruct.Pin = GPIO_PIN_0;
+  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
 
   /*Configure GPIO pins : PD8 PD9 PD10 PD11 */
   GPIO_InitStruct.Pin = GPIO_PIN_8|GPIO_PIN_9|GPIO_PIN_10|GPIO_PIN_11;
