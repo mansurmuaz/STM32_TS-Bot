@@ -124,8 +124,8 @@ void goBackward(void) {
 		__HAL_TIM_SET_AUTORELOAD(&htim1, arr);//set the new period
 		__HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_4, (int)arr/2);//keep 50% duty cycle
 
-
 		HAL_Delay(40);
+		__HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_4, 0);
 }
 
 void goLeft(void) {
@@ -148,17 +148,17 @@ void goRight(void) {
 
 }
 
-char * toArray(int number)
-    {
-        int n = log10(number) + 1;
-        int i;
-      char *numberArray = calloc(n, sizeof(char));
-        for ( i = 0; i < n; ++i, number /= 10 )
-        {
-            numberArray[i] = number % 10;
-        }
-        return numberArray;
-    }
+//char * toArray(int number)
+//    {
+//        int n = log10(number) + 1;
+//        int i;
+//      char *numberArray = calloc(n, sizeof(char));
+//        for ( i = 0; i < n; ++i, number /= 10 )
+//        {
+//            numberArray[i] = (number % 10) + '0';
+//        }
+//        return numberArray;
+//    }
 
 /* USER CODE END 0 */
 
@@ -204,9 +204,15 @@ int main(void)
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
-//	ILI9341_Set_Rotation(SCREEN_HORIZONTAL_1);
-//	ILI9341_Fill_Screen(BLUE);
-	
+		ILI9341_Fill_Screen(WHITE);
+		ILI9341_Set_Rotation(SCREEN_HORIZONTAL_1);
+		
+		ILI9341_Draw_Hollow_Rectangle_Coord(110, 10, 210, 75, RED );
+		ILI9341_Draw_Hollow_Rectangle_Coord(110, 160, 210, 225, RED );
+		
+		ILI9341_Draw_Hollow_Rectangle_Coord(10, 80, 90, 160, RED );
+		ILI9341_Draw_Hollow_Rectangle_Coord(230, 80, 310, 160, RED );
+		
 	uint8_t pDataReceivedByte[] = "_";
 		
 		
@@ -214,9 +220,15 @@ int main(void)
 			path[i] = 0;
 		}
 		
-	while (1){		
+	while (1){	
+		
+
+
+
+
+		
 			int numberToTransmit = distance;
-		uint8_t pDataTransmit[] = "Distance: 00000\r\n";
+			uint8_t pDataTransmit[] = "Distance: 00000\r\n";
 			int toPut = 14;
 			while(numberToTransmit != 0){
 				int digit = numberToTransmit % 10;
@@ -226,9 +238,11 @@ int main(void)
 				toPut--;
 			}
 			
+			char text[5];
+			sprintf(text, "%d", distance);
 
 			HAL_UART_Transmit_IT(&huart1, pDataTransmit, 17);
-			
+			ILI9341_Draw_Text(text, 150, 100, BLACK, 2, WHITE);
 			if (mode == 0){
 				
 				for( int i = 0; i < counter; i++ ){
@@ -269,7 +283,7 @@ int main(void)
 					HAL_GPIO_WritePin(GPIOD, GPIO_PIN_11, GPIO_PIN_RESET);
 					path[i] = 0;
 				}
-				counter = 0;				
+				counter = 0;		
 			}		
 				
 		HAL_UART_Receive_IT(&huart1, pDataReceivedByte, 1);
@@ -277,6 +291,7 @@ int main(void)
 		if ( (coor_x >= 1400 && coor_x <= 2400) || pDataReceivedByte[0] == 'w' || pDataReceivedByte[0] == 's' ) {
 				
 				if ((coor_y >= 300 && coor_y <= 1350) || pDataReceivedByte[0] == 's' ) {
+							ILI9341_Draw_Filled_Rectangle_Coord(230, 80, 310, 160, RED);
 					if(!mode) {
 							goBackward();					
 						} else {
@@ -288,7 +303,8 @@ int main(void)
 							__HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_4, 0);
 						}
 				} else if ( coor_y >= 2800  || pDataReceivedByte[0] == 'w' ) {
-						if(!mode) {
+							ILI9341_Draw_Filled_Rectangle_Coord(10, 80, 90, 160, RED);
+					if(!mode) {
 							goForward();			
 						} else {
 							path[counter] = 1;
@@ -304,8 +320,7 @@ int main(void)
 		if ( (coor_y >= 1450 && coor_y <= 2700 ) || pDataReceivedByte[0] == 'a' || pDataReceivedByte[0] == 'd') {
 		
 				if ((coor_x >= 300 && coor_x <= 1300) || pDataReceivedByte[0] == 'a'  ) {				// TURN LEFT
-				
-						
+						ILI9341_Draw_Filled_Rectangle_Coord(110, 160, 210, 225, RED );				
 						if(!mode) {
 							goLeft();
 						} else {
@@ -318,6 +333,8 @@ int main(void)
 						}
 						
 				} else if ( coor_x >= 2500 || pDataReceivedByte[0] == 'd'  ) {
+						ILI9341_Draw_Filled_Rectangle_Coord(110, 10, 210, 75, RED );
+
 						if(!mode) {
 							goRight();
 						} else {
@@ -331,6 +348,13 @@ int main(void)
 				}
 		}
 		HAL_Delay(40);
+
+		
+		ILI9341_Draw_Filled_Rectangle_Coord(111, 11, 209, 74, WHITE );
+		ILI9341_Draw_Filled_Rectangle_Coord(111, 161, 209, 224, WHITE);
+		
+		ILI9341_Draw_Filled_Rectangle_Coord(11, 81, 89, 159, WHITE );
+		ILI9341_Draw_Filled_Rectangle_Coord(231, 81, 309, 159, WHITE );		
 		
 		__HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_4, 0);
 		pDataReceivedByte[0] = '_';
@@ -627,17 +651,38 @@ static void MX_GPIO_Init(void)
   GPIO_InitTypeDef GPIO_InitStruct = {0};
 
   /* GPIO Ports Clock Enable */
+  __HAL_RCC_GPIOE_CLK_ENABLE();
   __HAL_RCC_GPIOC_CLK_ENABLE();
   __HAL_RCC_GPIOB_CLK_ENABLE();
-  __HAL_RCC_GPIOE_CLK_ENABLE();
   __HAL_RCC_GPIOD_CLK_ENABLE();
   __HAL_RCC_GPIOA_CLK_ENABLE();
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOD, GPIO_PIN_8|GPIO_PIN_9|GPIO_PIN_10|GPIO_PIN_11, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(GPIOE, D2_Pin|D3_Pin|D4_Pin|D5_Pin 
+                          |D6_Pin|D7_Pin|LCD_RST_Pin|LCD_BCK_PWM_Pin 
+                          |LCD_RD_Pin|LCD_WR_Pin|LCD_RS_Pin|LCD_CS_Pin 
+                          |D0_Pin|D1_Pin, GPIO_PIN_RESET);
+
+  /*Configure GPIO pin Output Level */
+  HAL_GPIO_WritePin(GPIOD, GPIO_PIN_8|GPIO_PIN_9|GPIO_PIN_10|GPIO_PIN_11 
+                          |CLK_Pin|MOSI_Pin|CS_Pin|IRQ_Pin 
+                          |MISO_Pin|GPIO_PIN_5, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(GPIOB, DRIVE_A_Pin|DRIVE_B_Pin, GPIO_PIN_RESET);
+
+  /*Configure GPIO pins : D2_Pin D3_Pin D4_Pin D5_Pin 
+                           D6_Pin D7_Pin LCD_RST_Pin LCD_BCK_PWM_Pin 
+                           LCD_RD_Pin LCD_WR_Pin LCD_RS_Pin LCD_CS_Pin 
+                           D0_Pin D1_Pin */
+  GPIO_InitStruct.Pin = D2_Pin|D3_Pin|D4_Pin|D5_Pin 
+                          |D6_Pin|D7_Pin|LCD_RST_Pin|LCD_BCK_PWM_Pin 
+                          |LCD_RD_Pin|LCD_WR_Pin|LCD_RS_Pin|LCD_CS_Pin 
+                          |D0_Pin|D1_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  HAL_GPIO_Init(GPIOE, &GPIO_InitStruct);
 
   /*Configure GPIO pin : PC0 */
   GPIO_InitStruct.Pin = GPIO_PIN_0;
@@ -645,8 +690,12 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
 
-  /*Configure GPIO pins : PD8 PD9 PD10 PD11 */
-  GPIO_InitStruct.Pin = GPIO_PIN_8|GPIO_PIN_9|GPIO_PIN_10|GPIO_PIN_11;
+  /*Configure GPIO pins : PD8 PD9 PD10 PD11 
+                           CLK_Pin MOSI_Pin CS_Pin IRQ_Pin 
+                           MISO_Pin PD5 */
+  GPIO_InitStruct.Pin = GPIO_PIN_8|GPIO_PIN_9|GPIO_PIN_10|GPIO_PIN_11 
+                          |CLK_Pin|MOSI_Pin|CS_Pin|IRQ_Pin 
+                          |MISO_Pin|GPIO_PIN_5;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
@@ -672,6 +721,7 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 		{
 				mode = !mode;
 				distance = 0;
+				ILI9341_Draw_Filled_Rectangle_Coord(150, 100, 200, 150, WHITE );
 		}	
 }
 /* USER CODE END 4 */
