@@ -88,6 +88,46 @@ void EASYMX_BOARD_TOUCH_CmpltCallback(uint32_t x, uint32_t y){
 		HAL_GPIO_WritePin(GPIOD, GPIO_PIN_11, GPIO_PIN_RESET);
 	}
 }
+
+void goForward(void) {
+		HAL_GPIO_WritePin(GPIOD, GPIO_PIN_8, GPIO_PIN_SET);
+		HAL_GPIO_WritePin(GPIOD, GPIO_PIN_9, GPIO_PIN_RESET);
+		HAL_GPIO_WritePin(GPIOD, GPIO_PIN_10, GPIO_PIN_SET);
+		HAL_GPIO_WritePin(GPIOD, GPIO_PIN_11, GPIO_PIN_RESET);	
+}
+
+void goBackward(void) {
+	
+		int8_t n = 0;
+		double_t noteFreq = 440;
+		uint16_t arr = 1000;
+	
+		HAL_GPIO_WritePin(GPIOD, GPIO_PIN_8, GPIO_PIN_RESET);
+		HAL_GPIO_WritePin(GPIOD, GPIO_PIN_9, GPIO_PIN_SET);
+		HAL_GPIO_WritePin(GPIOD, GPIO_PIN_10, GPIO_PIN_RESET);
+		HAL_GPIO_WritePin(GPIOD, GPIO_PIN_11, GPIO_PIN_SET);	
+		
+
+		__HAL_TIM_SET_AUTORELOAD(&htim1, arr);//set the new period
+		__HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_4, (int)arr/2);//keep 50% duty cycle
+}
+
+void goLeft(void) {
+		HAL_GPIO_WritePin(GPIOD, GPIO_PIN_8, GPIO_PIN_SET);
+		HAL_GPIO_WritePin(GPIOD, GPIO_PIN_9, GPIO_PIN_RESET);
+		HAL_GPIO_WritePin(GPIOD, GPIO_PIN_10, GPIO_PIN_RESET);
+		HAL_GPIO_WritePin(GPIOD, GPIO_PIN_11, GPIO_PIN_SET);		
+}
+
+void goRight(void) {
+									
+		HAL_GPIO_WritePin(GPIOD, GPIO_PIN_8, GPIO_PIN_RESET);
+		HAL_GPIO_WritePin(GPIOD, GPIO_PIN_9, GPIO_PIN_SET);
+		HAL_GPIO_WritePin(GPIOD, GPIO_PIN_10, GPIO_PIN_SET);
+		HAL_GPIO_WritePin(GPIOD, GPIO_PIN_11, GPIO_PIN_RESET);			
+}
+
+
 /* USER CODE END 0 */
 
 /**
@@ -154,23 +194,10 @@ int main(void)
 		if ( (coor_x >= 1400 && coor_x <= 2400) || pDataReceivedByte[0] == 'w' || pDataReceivedByte[0] == 's' ) {
 				
 				if ((coor_y >= 300 && coor_y <= 1350) || pDataReceivedByte[0] == 's' ) {
-						// GO BACK
-						HAL_GPIO_WritePin(GPIOD, GPIO_PIN_8, GPIO_PIN_RESET);
-						HAL_GPIO_WritePin(GPIOD, GPIO_PIN_9, GPIO_PIN_SET);
-						HAL_GPIO_WritePin(GPIOD, GPIO_PIN_10, GPIO_PIN_RESET);
-						HAL_GPIO_WritePin(GPIOD, GPIO_PIN_11, GPIO_PIN_SET);	
-				
-
-						__HAL_TIM_SET_AUTORELOAD(&htim1, arr);//set the new period
-						__HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_4, (int)arr/2);//keep 50% duty cycle
+						goBackward();
 				
 				} else if ( coor_y >= 2800  || pDataReceivedByte[0] == 'w' ) {
-						// GO FORWARD
-						
-						HAL_GPIO_WritePin(GPIOD, GPIO_PIN_8, GPIO_PIN_SET);
-						HAL_GPIO_WritePin(GPIOD, GPIO_PIN_9, GPIO_PIN_RESET);
-						HAL_GPIO_WritePin(GPIOD, GPIO_PIN_10, GPIO_PIN_SET);
-						HAL_GPIO_WritePin(GPIOD, GPIO_PIN_11, GPIO_PIN_RESET);	
+						goForward();
 				}
 		}
 	
@@ -178,22 +205,12 @@ int main(void)
 		
 				if ((coor_x >= 300 && coor_x <= 1300) || pDataReceivedByte[0] == 'a'  ) {				// TURN LEFT
 				
-						HAL_GPIO_WritePin(GPIOD, GPIO_PIN_8, GPIO_PIN_SET);
-						HAL_GPIO_WritePin(GPIOD, GPIO_PIN_9, GPIO_PIN_RESET);
-						HAL_GPIO_WritePin(GPIOD, GPIO_PIN_10, GPIO_PIN_RESET);
-						HAL_GPIO_WritePin(GPIOD, GPIO_PIN_11, GPIO_PIN_SET);			
-				
+					goRight();
 				} else if ( coor_x >= 2500 || pDataReceivedByte[0] == 'd'  ) {
-						// TURN RIGHT
-						
-						HAL_GPIO_WritePin(GPIOD, GPIO_PIN_8, GPIO_PIN_RESET);
-						HAL_GPIO_WritePin(GPIOD, GPIO_PIN_9, GPIO_PIN_SET);
-						HAL_GPIO_WritePin(GPIOD, GPIO_PIN_10, GPIO_PIN_SET);
-						HAL_GPIO_WritePin(GPIOD, GPIO_PIN_11, GPIO_PIN_RESET);			
-				
+					goLeft();
 				}
 		}
-		HAL_Delay(50);
+		HAL_Delay(40);
 		
 		__HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_4, 0);
 		pDataReceivedByte[0] = '_';
