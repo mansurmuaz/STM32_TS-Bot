@@ -27,5 +27,6 @@ touch_panel\ili9341_gfx.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_fla
 touch_panel\ili9341_gfx.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_pwr.h
 touch_panel\ili9341_gfx.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_tim.h
 touch_panel\ili9341_gfx.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_tim_ex.h
+touch_panel\ili9341_gfx.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_uart.h
 touch_panel\ili9341_gfx.o: ..\Drivers\ILI9341\ILI9341_GFX.h
 touch_panel\ili9341_gfx.o: ..\Drivers\ILI9341\5x5_font.h

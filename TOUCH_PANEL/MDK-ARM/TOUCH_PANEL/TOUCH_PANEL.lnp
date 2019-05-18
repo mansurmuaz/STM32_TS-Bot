@@ -8,6 +8,7 @@
 "touch_panel\stm32f1xx_hal_adc_ex.o"
 "touch_panel\stm32f1xx_hal_tim.o"
 "touch_panel\stm32f1xx_hal_tim_ex.o"
+"touch_panel\stm32f1xx_hal_uart.o"
 "touch_panel\stm32f1xx_hal.o"
 "touch_panel\stm32f1xx_hal_rcc.o"
 "touch_panel\stm32f1xx_hal_rcc_ex.o"

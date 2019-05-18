@@ -54,6 +54,8 @@ ADC_HandleTypeDef hadc2;
 TIM_HandleTypeDef htim1;
 TIM_HandleTypeDef htim6;
 
+UART_HandleTypeDef huart1;
+
 /* USER CODE BEGIN PV */
 
 /* USER CODE END PV */
@@ -65,6 +67,7 @@ static void MX_ADC1_Init(void);
 static void MX_ADC2_Init(void);
 static void MX_TIM1_Init(void);
 static void MX_TIM6_Init(void);
+static void MX_USART1_UART_Init(void);
 /* USER CODE BEGIN PFP */
 
 /* USER CODE END PFP */
@@ -119,6 +122,7 @@ int main(void)
   MX_ADC2_Init();
   MX_TIM1_Init();
   MX_TIM6_Init();
+  MX_USART1_UART_Init();
   /* USER CODE BEGIN 2 */
 	EASYMX_BOARD_TOUCH_Init(&hadc1, &hadc2, &htim6);
 	EASYMX_BOARD_TOUCH_Start();
@@ -128,61 +132,71 @@ int main(void)
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
-	ILI9341_Set_Rotation(SCREEN_HORIZONTAL_1);
-	ILI9341_Fill_Screen(BLUE);
+//	ILI9341_Set_Rotation(SCREEN_HORIZONTAL_1);
+//	ILI9341_Fill_Screen(BLUE);
+
+//	uint8_t pDataTransmit[] = "Hello _\r\n";
+	uint8_t pDataReceivedByte[] = "_";
+
 	int8_t n = 0;
 	double_t noteFreq = 440;
 	uint16_t arr = 1000;
+	
+	n = floor(2000 / 42.217) - 36;
+	noteFreq = 440*pow(1.059463094359, n);
+	arr = (double_t)72000000 / noteFreq / (htim1.Init.Prescaler+ 1) - 1;
+	
 	while (1){		
 		
-		if ( coor_x >= 1400 && coor_x <= 2400) {
+//		HAL_UART_Transmit_IT(&huart1, pDataTransmit, 9);
+		HAL_UART_Receive_IT(&huart1, pDataReceivedByte, 1);
 		
-			if (coor_y >= 300 && coor_y <= 1350 ) {
-				// GO BACK
-				HAL_GPIO_WritePin(GPIOD, GPIO_PIN_8, GPIO_PIN_RESET);
-				HAL_GPIO_WritePin(GPIOD, GPIO_PIN_9, GPIO_PIN_SET);
-				HAL_GPIO_WritePin(GPIOD, GPIO_PIN_10, GPIO_PIN_RESET);
-				HAL_GPIO_WritePin(GPIOD, GPIO_PIN_11, GPIO_PIN_SET);	
+		if ( (coor_x >= 1400 && coor_x <= 2400) || pDataReceivedByte[0] == 'w' || pDataReceivedByte[0] == 's' ) {
 				
-				n = floor(2000 / 42.217) - 36;
-				noteFreq = 440*pow(1.059463094359, n);
-				arr = (double_t)72000000 / noteFreq / (htim1.Init.Prescaler+ 1) - 1;
-				__HAL_TIM_SET_AUTORELOAD(&htim1, arr);//set the new period
-				__HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_4, (int)arr/2);//keep 50% duty cycle
+				if ((coor_y >= 300 && coor_y <= 1350) || pDataReceivedByte[0] == 's' ) {
+						// GO BACK
+						HAL_GPIO_WritePin(GPIOD, GPIO_PIN_8, GPIO_PIN_RESET);
+						HAL_GPIO_WritePin(GPIOD, GPIO_PIN_9, GPIO_PIN_SET);
+						HAL_GPIO_WritePin(GPIOD, GPIO_PIN_10, GPIO_PIN_RESET);
+						HAL_GPIO_WritePin(GPIOD, GPIO_PIN_11, GPIO_PIN_SET);	
 				
-			} else if ( coor_y >= 2800  ) {
-				// GO FORWARD
+
+						__HAL_TIM_SET_AUTORELOAD(&htim1, arr);//set the new period
+						__HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_4, (int)arr/2);//keep 50% duty cycle
 				
-				HAL_GPIO_WritePin(GPIOD, GPIO_PIN_8, GPIO_PIN_SET);
-				HAL_GPIO_WritePin(GPIOD, GPIO_PIN_9, GPIO_PIN_RESET);
-				HAL_GPIO_WritePin(GPIOD, GPIO_PIN_10, GPIO_PIN_SET);
-				HAL_GPIO_WritePin(GPIOD, GPIO_PIN_11, GPIO_PIN_RESET);	
-			}
+				} else if ( coor_y >= 2800  || pDataReceivedByte[0] == 'w' ) {
+						// GO FORWARD
+						
+						HAL_GPIO_WritePin(GPIOD, GPIO_PIN_8, GPIO_PIN_SET);
+						HAL_GPIO_WritePin(GPIOD, GPIO_PIN_9, GPIO_PIN_RESET);
+						HAL_GPIO_WritePin(GPIOD, GPIO_PIN_10, GPIO_PIN_SET);
+						HAL_GPIO_WritePin(GPIOD, GPIO_PIN_11, GPIO_PIN_RESET);	
+				}
 		}
 	
-		if ( coor_y >= 1450 && coor_y <= 2700) {
+		if ( (coor_y >= 1450 && coor_y <= 2700 ) || pDataReceivedByte[0] == 'a' || pDataReceivedByte[0] == 'd') {
 		
-			if (coor_x >= 300 && coor_x <= 1300 ) {
-				// TURN LEFT
+				if ((coor_x >= 300 && coor_x <= 1300) || pDataReceivedByte[0] == 'a'  ) {				// TURN LEFT
 				
-				HAL_GPIO_WritePin(GPIOD, GPIO_PIN_8, GPIO_PIN_SET);
-				HAL_GPIO_WritePin(GPIOD, GPIO_PIN_9, GPIO_PIN_RESET);
-				HAL_GPIO_WritePin(GPIOD, GPIO_PIN_10, GPIO_PIN_RESET);
-				HAL_GPIO_WritePin(GPIOD, GPIO_PIN_11, GPIO_PIN_SET);			
+						HAL_GPIO_WritePin(GPIOD, GPIO_PIN_8, GPIO_PIN_SET);
+						HAL_GPIO_WritePin(GPIOD, GPIO_PIN_9, GPIO_PIN_RESET);
+						HAL_GPIO_WritePin(GPIOD, GPIO_PIN_10, GPIO_PIN_RESET);
+						HAL_GPIO_WritePin(GPIOD, GPIO_PIN_11, GPIO_PIN_SET);			
 				
-			} else if ( coor_x >= 2500  ) {
-				// TURN RIGHT
+				} else if ( coor_x >= 2500 || pDataReceivedByte[0] == 'd'  ) {
+						// TURN RIGHT
+						
+						HAL_GPIO_WritePin(GPIOD, GPIO_PIN_8, GPIO_PIN_RESET);
+						HAL_GPIO_WritePin(GPIOD, GPIO_PIN_9, GPIO_PIN_SET);
+						HAL_GPIO_WritePin(GPIOD, GPIO_PIN_10, GPIO_PIN_SET);
+						HAL_GPIO_WritePin(GPIOD, GPIO_PIN_11, GPIO_PIN_RESET);			
 				
-				HAL_GPIO_WritePin(GPIOD, GPIO_PIN_8, GPIO_PIN_RESET);
-				HAL_GPIO_WritePin(GPIOD, GPIO_PIN_9, GPIO_PIN_SET);
-				HAL_GPIO_WritePin(GPIOD, GPIO_PIN_10, GPIO_PIN_SET);
-				HAL_GPIO_WritePin(GPIOD, GPIO_PIN_11, GPIO_PIN_RESET);			
-				
-			}
+				}
 		}
-		HAL_Delay(10);
+		HAL_Delay(50);
 		
 		__HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_4, 0);
+		pDataReceivedByte[0] = '_';
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
@@ -430,6 +444,39 @@ static void MX_TIM6_Init(void)
   /* USER CODE BEGIN TIM6_Init 2 */
 
   /* USER CODE END TIM6_Init 2 */
+
+}
+
+/**
+  * @brief USART1 Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_USART1_UART_Init(void)
+{
+
+  /* USER CODE BEGIN USART1_Init 0 */
+
+  /* USER CODE END USART1_Init 0 */
+
+  /* USER CODE BEGIN USART1_Init 1 */
+
+  /* USER CODE END USART1_Init 1 */
+  huart1.Instance = USART1;
+  huart1.Init.BaudRate = 9600;
+  huart1.Init.WordLength = UART_WORDLENGTH_8B;
+  huart1.Init.StopBits = UART_STOPBITS_1;
+  huart1.Init.Parity = UART_PARITY_NONE;
+  huart1.Init.Mode = UART_MODE_TX_RX;
+  huart1.Init.HwFlowCtl = UART_HWCONTROL_NONE;
+  huart1.Init.OverSampling = UART_OVERSAMPLING_16;
+  if (HAL_UART_Init(&huart1) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /* USER CODE BEGIN USART1_Init 2 */
+
+  /* USER CODE END USART1_Init 2 */
 
 }
 
