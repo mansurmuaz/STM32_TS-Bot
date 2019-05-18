@@ -152,9 +152,9 @@
         <Bp>
           <Number>0</Number>
           <Type>0</Type>
-          <LineNumber>190</LineNumber>
-          <EnabledFlag>1</EnabledFlag>
-          <Address>134231808</Address>
+          <LineNumber>607</LineNumber>
+          <EnabledFlag>0</EnabledFlag>
+          <Address>134221148</Address>
           <ByteObject>0</ByteObject>
           <HtxType>0</HtxType>
           <ManyObjects>0</ManyObjects>
@@ -163,14 +163,14 @@
           <BreakIfRCount>1</BreakIfRCount>
           <Filename>../Src/main.c</Filename>
           <ExecCommand></ExecCommand>
-          <Expression>\\TOUCH_PANEL\../Src/main.c\190</Expression>
+          <Expression>\\TOUCH_PANEL\../Src/main.c\607</Expression>
         </Bp>
         <Bp>
           <Number>1</Number>
           <Type>0</Type>
-          <LineNumber>191</LineNumber>
-          <EnabledFlag>1</EnabledFlag>
-          <Address>134231818</Address>
+          <LineNumber>608</LineNumber>
+          <EnabledFlag>0</EnabledFlag>
+          <Address>134221164</Address>
           <ByteObject>0</ByteObject>
           <HtxType>0</HtxType>
           <ManyObjects>0</ManyObjects>
@@ -179,7 +179,71 @@
           <BreakIfRCount>1</BreakIfRCount>
           <Filename>../Src/main.c</Filename>
           <ExecCommand></ExecCommand>
-          <Expression>\\TOUCH_PANEL\../Src/main.c\191</Expression>
+          <Expression>\\TOUCH_PANEL\../Src/main.c\608</Expression>
+        </Bp>
+        <Bp>
+          <Number>2</Number>
+          <Type>0</Type>
+          <LineNumber>609</LineNumber>
+          <EnabledFlag>0</EnabledFlag>
+          <Address>134221186</Address>
+          <ByteObject>0</ByteObject>
+          <HtxType>0</HtxType>
+          <ManyObjects>0</ManyObjects>
+          <SizeOfObject>0</SizeOfObject>
+          <BreakByAccess>0</BreakByAccess>
+          <BreakIfRCount>1</BreakIfRCount>
+          <Filename>../Src/main.c</Filename>
+          <ExecCommand></ExecCommand>
+          <Expression>\\TOUCH_PANEL\../Src/main.c\609</Expression>
+        </Bp>
+        <Bp>
+          <Number>3</Number>
+          <Type>0</Type>
+          <LineNumber>610</LineNumber>
+          <EnabledFlag>0</EnabledFlag>
+          <Address>134221202</Address>
+          <ByteObject>0</ByteObject>
+          <HtxType>0</HtxType>
+          <ManyObjects>0</ManyObjects>
+          <SizeOfObject>0</SizeOfObject>
+          <BreakByAccess>0</BreakByAccess>
+          <BreakIfRCount>1</BreakIfRCount>
+          <Filename>../Src/main.c</Filename>
+          <ExecCommand></ExecCommand>
+          <Expression>\\TOUCH_PANEL\../Src/main.c\610</Expression>
+        </Bp>
+        <Bp>
+          <Number>4</Number>
+          <Type>0</Type>
+          <LineNumber>611</LineNumber>
+          <EnabledFlag>0</EnabledFlag>
+          <Address>134221210</Address>
+          <ByteObject>0</ByteObject>
+          <HtxType>0</HtxType>
+          <ManyObjects>0</ManyObjects>
+          <SizeOfObject>0</SizeOfObject>
+          <BreakByAccess>0</BreakByAccess>
+          <BreakIfRCount>1</BreakIfRCount>
+          <Filename>../Src/main.c</Filename>
+          <ExecCommand></ExecCommand>
+          <Expression>\\TOUCH_PANEL\../Src/main.c\611</Expression>
+        </Bp>
+        <Bp>
+          <Number>5</Number>
+          <Type>0</Type>
+          <LineNumber>612</LineNumber>
+          <EnabledFlag>0</EnabledFlag>
+          <Address>134221218</Address>
+          <ByteObject>0</ByteObject>
+          <HtxType>0</HtxType>
+          <ManyObjects>0</ManyObjects>
+          <SizeOfObject>0</SizeOfObject>
+          <BreakByAccess>0</BreakByAccess>
+          <BreakIfRCount>1</BreakIfRCount>
+          <Filename>../Src/main.c</Filename>
+          <ExecCommand></ExecCommand>
+          <Expression>\\TOUCH_PANEL\../Src/main.c\612</Expression>
         </Bp>
       </Breakpoint>
       <WatchWindow1>

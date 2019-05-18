@@ -57,6 +57,16 @@ TIM_HandleTypeDef htim6;
 UART_HandleTypeDef huart1;
 
 /* USER CODE BEGIN PV */
+uint8_t mode = 0;
+int8_t path[100];
+//	0 -> none
+//	1 -> forward
+//	2 -> backward
+//	3 -> left
+//  4 -> right
+int counter = 0;
+
+	uint16_t arr = 1000;
 
 /* USER CODE END PV */
 
@@ -100,10 +110,6 @@ void goForward(void) {
 }
 
 void goBackward(void) {
-	
-		int8_t n = 0;
-		double_t noteFreq = 440;
-		uint16_t arr = 1000;
 	
 		HAL_GPIO_WritePin(GPIOD, GPIO_PIN_8, GPIO_PIN_RESET);
 		HAL_GPIO_WritePin(GPIOD, GPIO_PIN_9, GPIO_PIN_SET);
@@ -189,19 +195,6 @@ int main(void)
 //	uint8_t pDataTransmit[] = "Hello _\r\n";
 	uint8_t pDataReceivedByte[] = "_";
 
-	int8_t n = 0;
-	double_t noteFreq = 440;
-	uint16_t arr = 1000;
-	
-	int8_t mode = 0;
-	
-		int8_t path[100];
-//	0 -> none
-//	1 -> forward
-//	2 -> backward
-//	3 -> left
-//  4 -> right
-		int counter = 0;
 		
 		for( int i = 0; i < 100; i++ ){
 			path[i] = 0;
@@ -209,13 +202,6 @@ int main(void)
 		
 	while (1){		
 		
-		
-		if (HAL_GPIO_ReadPin(GPIOC, GPIO_PIN_0)) {
-			mode = !mode;
-			__HAL_TIM_SET_AUTORELOAD(&htim1, arr);//set the new period
-			__HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_4, (int)arr/2);//keep 50% duty cycle
-			HAL_Delay(300);
-			__HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_4, 0);
 			if (mode == 0){
 			
 				for( int i = 0; i < counter; i++ ){
@@ -257,8 +243,8 @@ int main(void)
 					path[i] = 0;
 				}
 				counter = 0;				
-			}
-		}
+			}		
+		
 		
 		
 //		HAL_UART_Transmit_IT(&huart1, pDataTransmit, 9);
@@ -631,7 +617,7 @@ static void MX_GPIO_Init(void)
 
   /*Configure GPIO pin : PC0 */
   GPIO_InitStruct.Pin = GPIO_PIN_0;
-  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
+  GPIO_InitStruct.Mode = GPIO_MODE_IT_RISING;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
 
@@ -649,10 +635,20 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 
+  /* EXTI interrupt init*/
+  HAL_NVIC_SetPriority(EXTI0_IRQn, 0, 0);
+  HAL_NVIC_EnableIRQ(EXTI0_IRQn);
+
 }
 
 /* USER CODE BEGIN 4 */
-
+void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
+{
+		if(GPIO_Pin==GPIO_PIN_0)
+		{
+				mode = !mode;
+		}	
+}
 /* USER CODE END 4 */
 
 /**
