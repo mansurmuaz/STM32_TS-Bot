@@ -32,3 +32,5 @@ touch_panel\main.o: ../Inc/touch.h
 touch_panel\main.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\math.h
 touch_panel\main.o: ../Src/ILI9341_STM32_Driver.h
 touch_panel\main.o: ../Src/ILI9341_GFX.h
+touch_panel\main.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
+touch_panel\main.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdlib.h

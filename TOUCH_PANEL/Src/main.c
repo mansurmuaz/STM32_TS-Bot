@@ -27,6 +27,9 @@
 #include <math.h>
 #include "ILI9341_STM32_Driver.h"
 #include "ILI9341_GFX.h"
+#include <string.h>
+#include <stdio.h>
+#include <stdlib.h>
 
 /* USER CODE END Includes */
 
@@ -66,7 +69,9 @@ int8_t path[100];
 //  4 -> right
 int counter = 0;
 
-	uint16_t arr = 1000;
+int distance = 0;
+
+uint16_t arr = 1000;
 
 /* USER CODE END PV */
 
@@ -104,7 +109,7 @@ void goForward(void) {
 		HAL_GPIO_WritePin(GPIOD, GPIO_PIN_9, GPIO_PIN_RESET);
 		HAL_GPIO_WritePin(GPIOD, GPIO_PIN_10, GPIO_PIN_SET);
 		HAL_GPIO_WritePin(GPIOD, GPIO_PIN_11, GPIO_PIN_RESET);	
-	
+		distance++;
 		HAL_Delay(40);
 
 }
@@ -115,8 +120,7 @@ void goBackward(void) {
 		HAL_GPIO_WritePin(GPIOD, GPIO_PIN_9, GPIO_PIN_SET);
 		HAL_GPIO_WritePin(GPIOD, GPIO_PIN_10, GPIO_PIN_RESET);
 		HAL_GPIO_WritePin(GPIOD, GPIO_PIN_11, GPIO_PIN_SET);	
-		
-
+		distance++;
 		__HAL_TIM_SET_AUTORELOAD(&htim1, arr);//set the new period
 		__HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_4, (int)arr/2);//keep 50% duty cycle
 
@@ -144,6 +148,17 @@ void goRight(void) {
 
 }
 
+char * toArray(int number)
+    {
+        int n = log10(number) + 1;
+        int i;
+      char *numberArray = calloc(n, sizeof(char));
+        for ( i = 0; i < n; ++i, number /= 10 )
+        {
+            numberArray[i] = number % 10;
+        }
+        return numberArray;
+    }
 
 /* USER CODE END 0 */
 
@@ -191,19 +206,31 @@ int main(void)
   /* USER CODE BEGIN WHILE */
 //	ILI9341_Set_Rotation(SCREEN_HORIZONTAL_1);
 //	ILI9341_Fill_Screen(BLUE);
-
-//	uint8_t pDataTransmit[] = "Hello _\r\n";
+	
 	uint8_t pDataReceivedByte[] = "_";
-
+		
 		
 		for( int i = 0; i < 100; i++ ){
 			path[i] = 0;
 		}
 		
 	while (1){		
-		
-			if (mode == 0){
+			int numberToTransmit = distance;
+		uint8_t pDataTransmit[] = "Distance: 00000\r\n";
+			int toPut = 14;
+			while(numberToTransmit != 0){
+				int digit = numberToTransmit % 10;
+				pDataTransmit[toPut] = digit + (int)'0';
+				numberToTransmit -= digit;
+				numberToTransmit /= 10;
+				toPut--;
+			}
 			
+
+			HAL_UART_Transmit_IT(&huart1, pDataTransmit, 17);
+			
+			if (mode == 0){
+				
 				for( int i = 0; i < counter; i++ ){
 					int time = 0;
 					switch (path[i]) {
@@ -244,10 +271,7 @@ int main(void)
 				}
 				counter = 0;				
 			}		
-		
-		
-		
-//		HAL_UART_Transmit_IT(&huart1, pDataTransmit, 9);
+				
 		HAL_UART_Receive_IT(&huart1, pDataReceivedByte, 1);
 		
 		if ( (coor_x >= 1400 && coor_x <= 2400) || pDataReceivedByte[0] == 'w' || pDataReceivedByte[0] == 's' ) {
@@ -647,6 +671,7 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 		if(GPIO_Pin==GPIO_PIN_0)
 		{
 				mode = !mode;
+				distance = 0;
 		}	
 }
 /* USER CODE END 4 */
